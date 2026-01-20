@@ -1,3 +1,9 @@
+<div class="d-flex justify-content-end mb-3">
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+    </form>
+</div>
 <!DOCTYPE html>
 <html lang="es">
 <head>
