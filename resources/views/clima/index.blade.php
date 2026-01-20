@@ -1,7 +1,9 @@
-<div class="d-flex justify-content-end mb-3">
+<div class="d-flex justify-content-end align-items-center mb-3 gap-3">
+    <span class="text-gray-700">Usuario: <strong>{{ auth()->user()->name }}</strong></span>
+
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+        <button type="submit" class="btn btn-info btn-sm mt-2">Cerrar sesión</button>
     </form>
 </div>
 <!DOCTYPE html>
@@ -10,15 +12,13 @@
     <meta charset="UTF-8">
     <title>Monitoreo Climático</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
 <div class="container py-5">
 
-    <h1 class="mb-4 text-center">🌦️ Sistema de Monitoreo Climático</h1>
+    <h1 class="mb-4 text-center"> Lista de Monitoreo Climático</h1>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -55,7 +55,7 @@
                         <th>Humedad</th>
                         <th>Condición</th>
                         <th>Fecha</th>
-                        <th>Acciones</th> <!-- Nueva columna -->
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,9 +66,9 @@
                             <td>{{ $clima->temp_fahrenheit }}</td>
                             <td>{{ $clima->humedad }}%</td>
                             <td>{{ ucfirst($clima->condicion_clima) }}</td>
-                            <td>{{ $clima->fecha_consulta }}</td>
+                            <td>{{ \Carbon\Carbon::parse($clima->fecha_consulta)->format('Y-m-d') }}</td>
                             <td class="d-flex gap-1">
-                                <!-- Botón actualizar -->
+
                                 <form action="{{ route('clima.update', $clima->id) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
@@ -77,7 +77,7 @@
                                     </button>
                                 </form>
 
-                                <!-- Botón eliminar -->
+
                                 <form action="{{ route('clima.destroy', $clima->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

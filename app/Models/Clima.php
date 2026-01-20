@@ -22,13 +22,13 @@ class Clima extends Model
 
     protected $appends = ['temp_fahrenheit'];
 
-    // Accessor: Celsius → Fahrenheit
+
     public function getTempFahrenheitAttribute(): float
     {
         return round(($this->temperatura * 9 / 5) + 32, 2);
     }
 
-    // Relación polimórfica
+
     public function comentarios(): MorphMany
     {
         return $this->morphMany(Comentario::class, 'commentable');
