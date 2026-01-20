@@ -7,6 +7,94 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+---------------------------------------------------------------------------------------
+# Sistema de Monitoreo Climático en Tiempo Real
+
+## Descripción
+Aplicación web desarrollada en **Laravel** que permite consultar, almacenar, actualizar y eliminar datos de clima en tiempo real utilizando la API de **OpenWeatherMap**
+
+---------------------------------------------------------------------------------------
+
+## Instalación y Despliegue Paso a Paso
+
+1. Clonar el repositorio desde GitHub (cuenta con su respectivo 
+historial de commits).
+
+2. Instalar las dependencias de backend con composer install.
+
+3. Instalar dependencias de frontend con npm install.
+
+4. Crear un archivo .env con la configuración de la base de datos:
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=clima
+DB_USERNAME=root
+DB_PASSWORD=
+
+5. Instalación de Breeze y todos sus componentes (en este caso no se utilizó Livewire 
+para el frontend, pero en su lugar se utilizó otra tecnología como Bootstrap)
+
+## CLAVE API KEY UTILIZADA
+OPENWEATHER_API_KEY=afe53cf9953843e8bbb2b2e885c97f41
+
+* php artisan key:generate (Generar clave)
+* php artisan migrate (Ejecutar migraciones para crear tablas)
+* php artisan serve (Levantar servidor)
+
+6. Acceder a la aplicación en http://127.0.0.1:8000/.
+7. Crear un usuario desde la pantalla de registro.
+8. Ingresar con el usuario registrado para acceder al sistema.
+
+## Funcionalidades
+Consulta de clima en tiempo real usando la API de OpenWeatherMap.
+CRUD de climas: crear, actualizar y eliminar.
+Visualización de temperatura en °C y °F.
+Fecha de consulta mostrando solo el día.
+Autenticación de usuarios (registro, login, logout).
+Auditoría de acciones: logs al actualizar o eliminar climas, indicando usuario, ciudad y clima afectado.
+
+## API
+La aplicación utiliza la API de OpenWeatherMap para obtener los datos de clima.
+La aplicación utiliza la API de Laravel para interactuar con la base de datos.
+
+## Base de datos
+
+La aplicación utiliza MySQL para almacenar los datos de clima.
+Las tablas se crean mediante migraciones.
+Modelo principal: Clima.
+
+## Servicios
+WeatherService → Interactúa con la API de OpenWeatherMap.
+
+## Explicación de Diseño
+* Se utilizó la arquitectura Modelo-Vista-Controlador (MVC) de Laravel.
+Vistas presentan la información al usuario y manejan la interfaz con Bootstrap.
+
+* Separación de responsabilidades y SOLID
+La lógica de consulta a la API de clima se encapsula en el servicio WeatherService.
+
+* Gestión de usuarios y seguridad. Se implementó autenticación completa con registro, login y logout. Solo usuarios autenticados pueden crear, actualizar o eliminar climas.
+
+* Los logs de auditoría registran qué usuario realizó cada acción, aumentando la trazabilidad,optimización y performance
+
+* Se utiliza caché con Laravel para almacenar temporalmente los datos de la API y reducir llamadas repetidas.
+
+Se aplicaron accessors en el modelo Clima para calcular automáticamente la temperatura en Fahrenheit.
+
+* Frontend y usabilidad se utilizó Bootstrap para una interfaz limpia y responsive.
+
+* Se definieron colores distintos para botones según la acción: azul para actualizar, rojo para eliminar, etc. Se muestra solo la fecha en la tabla de consultas para mayor claridad.
+
+* Auditoría y logs. Se registran logs informativos al actualizar o eliminar climas, incluyendo usuario, ciudad y clima afectado.
+
+## Compatibilidad
+
+Laravel 8.x
+PHP 7.4+
+MySQL 8.x
+Bootstrap 5.x
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
