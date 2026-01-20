@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoreo Climático</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <h1 class="mb-4 text-center">🌦️ Sistema de Monitoreo Climático</h1>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="POST" action="{{ route('clima.buscar') }}">
+                @csrf
+                <div class="row g-2">
+                    <div class="col-md-9">
+                        <input type="text" name="ciudad" class="form-control" placeholder="Ej: Quito" required>
+                    </div>
+                    <div class="col-md-3 d-grid">
+                        <button class="btn btn-primary">Buscar clima</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Ciudad</th>
+                        <th>Temp °C</th>
+                        <th>Temp °F</th>
+                        <th>Humedad</th>
+                        <th>Condición</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th> <!-- Nueva columna -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($climas as $clima)
+                        <tr>
+                            <td>{{ $clima->ciudad }}</td>
+                            <td>{{ $clima->temperatura }}</td>
+                            <td>{{ $clima->temp_fahrenheit }}</td>
+                            <td>{{ $clima->humedad }}%</td>
+                            <td>{{ ucfirst($clima->condicion_clima) }}</td>
+                            <td>{{ $clima->fecha_consulta }}</td>
+                            <td class="d-flex gap-1">
+                                <!-- Botón actualizar -->
+                                <form action="{{ route('clima.update', $clima->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-info btn-sm">
+                                        Actualizar
+                                    </button>
+                                </form>
+
+                                <!-- Botón eliminar -->
+                                <form action="{{ route('clima.destroy', $clima->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('¿Seguro quieres eliminar este clima?')">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">Sin registros</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
