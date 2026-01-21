@@ -95,6 +95,18 @@ PHP 7.4+
 MySQL 8.x
 Bootstrap 5.x
 
+## Evaluación dos puntos mas
+1. Se utilizo algunas validaciones JavaScript
+no en su totalida, aun con Blade, en:
+Envio de formularios Vacios como:
+* Buscar ciudad
+* Agregar coemntarios vacios
+* Eliminar, actualizar y guardar.
+
+2. Se aumento CRUD a los comentarios por cada registro
+con:
+* Editar, eliminar y confirmación para guardar.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
