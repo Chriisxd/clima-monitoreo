@@ -6,6 +6,7 @@
         <button type="submit" class="btn btn-info btn-sm mt-2">Cerrar sesión</button>
     </form>
 </div>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,11 +31,12 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            <form method="POST" action="{{ route('clima.buscar') }}">
+            <form id="formBuscarCiudad" method="POST" action="{{ route('clima.buscar') }}">
                 @csrf
                 <div class="row g-2">
                     <div class="col-md-9">
-                        <input type="text" name="ciudad" class="form-control" placeholder="Ej: Quito" required>
+                        <input type="text" name="ciudad" class="form-control" placeholder="Ej: Quito">
+                        <div class="invalid-feedback">Debes ingresar el nombre de la ciudad.</div>
                     </div>
                     <div class="col-md-3 d-grid">
                         <button class="btn btn-primary">Buscar clima</button>
@@ -76,26 +78,25 @@
                                         <button type="submit" class="btn btn-info btn-sm">Actualizar</button>
                                     </form>
 
-                                    <form action="{{ route('clima.destroy', $clima->id) }}" method="POST">
+                                    <form class="formEliminarClima" action="{{ route('clima.destroy', $clima->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro quieres eliminar este clima?')">Eliminar</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                     </form>
                                 </div>
 
-                                <!-- Formulario para añadir comentario -->
-                                <form action="{{ route('comentarios.store', $clima->id) }}" method="POST" class="d-flex gap-1">
+                                <form class="formAgregarComentario d-flex gap-1" action="{{ route('comentarios.store', $clima->id) }}" method="POST">
                                     @csrf
-                                    <input type="text" name="contenido" class="form-control form-control-sm" placeholder="Añadir comentario..." required>
+                                    <input type="text" name="contenido" class="form-control form-control-sm" placeholder="Añadir comentario...">
+                                    <div class="invalid-feedback">El comentario no puede estar vacío.</div>
                                     <button type="submit" class="btn btn-primary btn-sm">Comentar</button>
                                 </form>
 
-                                <!-- Botón para ver comentarios -->
                                 <button type="button" class="btn btn-secondary btn-sm mt-1" data-bs-toggle="collapse" data-bs-target="#comentarios-{{ $clima->id }}">
                                     Ver Comentarios ({{ $clima->comentarios->count() }})
                                 </button>
 
-                                <!-- Lista de comentarios con editar/eliminar -->
+  
                                 <div id="comentarios-{{ $clima->id }}" class="collapse mt-1">
                                     <ul class="list-group list-group-flush">
                                         @forelse($clima->comentarios as $comentario)
@@ -107,19 +108,21 @@
                                                 </div>
 
                                                 <div class="d-flex gap-1">
-                                                    <!-- Editar comentario en línea -->
-                                                    <form action="{{ route('comentarios.update', $comentario->id) }}" method="POST" style="display:inline-flex;">
+   
+                                                    <form class="formEditarComentario" action="{{ route('comentarios.update', $comentario->id) }}" method="POST" style="display:inline-flex;">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <input type="text" name="contenido" value="{{ $comentario->contenido }}" class="form-control form-control-sm">
-                                                        <button type="submit" class="btn btn-sm btn-warning">Actualizar</button>
+                                                        <input type="text" name="contenido" value="{{ $comentario->contenido }}" class="form-control form-control-sm" readonly>
+                                                        <div class="invalid-feedback">El comentario no puede estar vacío.</div>
+                                                        <button type="button" class="btn btn-sm btn-warning btnEditar">Editar</button>
+                                                        <button type="submit" class="btn btn-sm btn-success btnGuardar" style="display:none;">Guardar</button>
+                                                        <button type="button" class="btn btn-sm btn-secondary btnCancelar" style="display:none;">Cancelar</button>
                                                     </form>
 
-                                                    <!-- Eliminar comentario -->
-                                                    <form action="{{ route('comentarios.destroy', $comentario->id) }}" method="POST" style="display:inline-flex;">
+                                                    <form class="formEliminarComentario" action="{{ route('comentarios.destroy', $comentario->id) }}" method="POST" style="display:inline-flex;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar comentario?')">Eliminar</button>
+                                                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                                                     </form>
                                                 </div>
                                             </li>
@@ -144,5 +147,114 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+function confirmarEliminarClima() {
+    return confirm("¿Seguro quieres eliminar este clima?");
+}
+
+function confirmarEliminarComentario() {
+    return confirm("¿Eliminar comentario?");
+}
+
+
+const inputCiudad = document.querySelector('input[name="ciudad"]');
+const formBuscarCiudad = document.getElementById('formBuscarCiudad');
+
+inputCiudad.addEventListener('input', function() {
+    if (this.value.trim() === '') {
+        this.classList.add('is-invalid');
+    } else {
+        this.classList.remove('is-invalid');
+    }
+});
+
+formBuscarCiudad.addEventListener('submit', function(e) {
+    if (inputCiudad.value.trim() === '') {
+        alert("Debes ingresar el nombre de la ciudad.");
+        inputCiudad.classList.add('is-invalid');
+        e.preventDefault();
+    }
+});
+
+
+document.querySelectorAll('.formAgregarComentario').forEach(function(form) {
+    const input = form.querySelector('input[name="contenido"]');
+
+    input.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        if (input.value.trim() === '') {
+            alert("El comentario no puede estar vacío.");
+            input.classList.add('is-invalid');
+            e.preventDefault();
+        }
+    });
+});
+
+document.querySelectorAll('.formEliminarClima').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+        if(!confirmarEliminarClima()) e.preventDefault();
+    });
+});
+
+document.querySelectorAll('.formEliminarComentario').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+        if(!confirmarEliminarComentario()) e.preventDefault();
+    });
+});
+
+document.querySelectorAll('.formEditarComentario').forEach(function(form) {
+    const input = form.querySelector('input[name="contenido"]');
+    const btnEditar = form.querySelector('.btnEditar');
+    const btnGuardar = form.querySelector('.btnGuardar');
+    const btnCancelar = form.querySelector('.btnCancelar');
+
+    let valorOriginal = input.value;
+
+    btnEditar.addEventListener('click', function() {
+        input.removeAttribute('readonly');
+        input.focus();
+        btnEditar.style.display = 'none';
+        btnGuardar.style.display = 'inline-block';
+        btnCancelar.style.display = 'inline-block';
+    });
+
+
+    btnCancelar.addEventListener('click', function() {
+        input.value = valorOriginal;
+        input.setAttribute('readonly', true);
+        btnEditar.style.display = 'inline-block';
+        btnGuardar.style.display = 'none';
+        btnCancelar.style.display = 'none';
+        input.classList.remove('is-invalid');
+    });
+
+ 
+    input.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        if (!input.value.trim()) {
+            alert("El comentario no puede estar vacío.");
+            input.classList.add('is-invalid');
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 </body>
 </html>
